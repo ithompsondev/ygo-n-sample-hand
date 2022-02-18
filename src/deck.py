@@ -1,8 +1,16 @@
+import random
+
 class Deck:
+    # Keeping track of card numbers
     def __init__(self):
         self.deck = []
 
-    
+
+    # Construct a deck using an already existing list of cards
+    def construnct(self,cards):
+        self.deck = cards
+
+
     # [bottom card . . . top card]
     def add(self,card):
         self.deck.append(card)
@@ -17,8 +25,7 @@ class Deck:
 
 
     def shuffle(self):
-        # shuffle deck
-        pass
+        random.shuffle(self.deck)
 
     def sample(self,n):
         hand = []
