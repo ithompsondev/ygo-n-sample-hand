@@ -1,4 +1,5 @@
 import express from 'express'
+import session from 'express-session'
 
 export const port = process.env.PORT || 8000
 export const host = process.env.HOST || 'localhost'
@@ -18,4 +19,12 @@ export function accessRequestBody(server) {
 
 export function mountRouter(server,mount,router) {
     server.use(mount,router)
+}
+
+export function setSession(server) {
+    server.use(session({
+        secret: 'sxexsxsxixoxn',
+        resave: false,
+        saveUninitialized: true
+    }))
 }

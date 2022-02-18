@@ -1,9 +1,11 @@
-import {setup,useEJS,mountRouter,port,host, accessRequestBody} from './scripts/server.js'
+import {setup,useEJS,mountRouter,port,host,accessRequestBody,setSession} from './scripts/server.js'
 import {deckRouter} from './routes/deck.js'
+import dotenv from 'dotenv'
 dotenv.config()
 
 const app = setup()
 useEJS(app)
+setSession(app)
 accessRequestBody(app)
 
 mountRouter(app,'/deck',deckRouter)

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Hands</title>
+</head>
+<body>
+    <h2>Sample Five Card Hands</h2>
+    <% for (let i = 0; i < hands.length; i++) { %>
+        <h4>Sample Hand <% i %></h4>
+        <% for (let j = 0; j < hands[i].length; j++) { %>
+            <p><%= hands[i][j] %></p>
+        <% } %>
+    <% } %>
+</body>
+</html>
