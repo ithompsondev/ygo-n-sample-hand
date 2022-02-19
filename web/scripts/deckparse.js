@@ -1,5 +1,5 @@
 const trailingRegex = /\r?\n|\r/ // trailing windows/linux and mac trailing newlines
-const cardRegex = /(.+)\s+([1-3])/ // [CARD NAME][WHITE SPACE][1|2|3]
+const cardRegex = /(.+)\s+x*([1-3])/ // [CARD NAME][WHITE SPACE][1|2|3]
 
 export function parseDeck(deckText) {
     const cleanedDeckText = cleanText(deckText)

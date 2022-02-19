@@ -8,11 +8,15 @@
 </head>
 <body>
     <h2>Sample Five Card Hands</h2>
-    <% for (let i = 0; i < hands.length; i++) { %>
-        <h4>Sample Hand <% i %></h4>
-        <% for (let j = 0; j < hands[i].length; j++) { %>
-            <p><%= hands[i][j] %></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;grid-gap:20px;">
+        <% for (let i = 0; i < hands.length; i++) { %>
+            <div style="border:2px solid black;padding: 8px;">
+                <h4 style="font-family:Georgia, 'Times New Roman', Times, serif">Sample Hand <%= i + 1 %></h4>
+                <% for (let j = 0; j < hands[i].length; j++) { %>
+                    <div style="font-family:Helvetica, sans-serif"><%= hands[i][j] %></div>
+                <% } %>
+            </div>
         <% } %>
-    <% } %>
+    </div>
 </body>
 </html>

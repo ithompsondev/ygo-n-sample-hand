@@ -25,6 +25,7 @@ export function setSession(server) {
     server.use(session({
         secret: 'sxexsxsxixoxn',
         resave: false,
-        saveUninitialized: true
+        saveUninitialized: true,
+        cookie: { secure: false }
     }))
 }

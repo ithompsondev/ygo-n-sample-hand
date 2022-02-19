@@ -14,7 +14,7 @@ deckRouter.post('/create',(req,res) => {
     res.redirect(`/deck/${deckName}`)
 })
 
-deckRouter.get('/samples',(req,res) => {
+deckRouter.get('/:deckName/samples',(req,res) => {
     let hands = sample(req.session.deck)
     res.render('deck/sample',{ hands: hands })
 })
