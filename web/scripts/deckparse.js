@@ -9,7 +9,7 @@ export function parseDeck(deckText) {
     return deck
 }
 
-function cleanText(text) {
+export function cleanText(text) {
     return text.trim()
 }
 
