@@ -1,7 +1,7 @@
 import express from 'express'
 import { parseDeck } from '../scripts/deckparse.js'
 import { sample } from '../scripts/sample.js'
-import { queryCard,queryCards,displayMeaningfulData } from '../scripts/ygocard.js'
+import { queryCard,queryCards,displayMeaningfulData } from '../scripts/ygo/ygocard.js'
 
 export const deckRouter = express.Router()
 
