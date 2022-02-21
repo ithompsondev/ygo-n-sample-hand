@@ -1,16 +1,16 @@
-import {setup,useEJS,mountRouter,port,host,accessRequestBody,setSession} from './scripts/server.js'
-import {deckRouter} from './routes/deck.js'
+import { setup,useEJS,mountRouter,port,host,accessRequestBody,initSessions,connectSessions } from './scripts/server.js'
+import { deckRouter } from './routes/deck.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
+const sessionDB = connectSessions()
 const app = setup()
 useEJS(app)
-setSession(app)
+initSessions(app)
 accessRequestBody(app)
 
 mountRouter(app,'/deck',deckRouter)
 app.get('/',(req,res) => {
-    console.log(`Session ID: ${req.session.id}`)
     res.render('index')
 })
 

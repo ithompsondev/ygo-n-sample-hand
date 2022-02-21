@@ -1,5 +1,17 @@
 export function isNotMonster(cardType) {
-    return ((cardType == 'Spell Card') || (cardType == 'Trap Card'))
+    return isSpell(cardType) || isTrap(cardType)
+}
+
+export function isMonster(cardType) {
+    return (!isSpell(cardType)) && (!isTrap(cardType))
+}
+
+export function isSpell(cardType) {
+    return (cardType == 'Spell Card')
+}
+
+export function isTrap(cardType) {
+    return (cardType == 'Trap Card')
 }
 
 // Parse monster card information from json response in response data[]
