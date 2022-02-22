@@ -13,7 +13,11 @@
             <h4 style="font-family:Georgia, 'Times New Roman', Times, serif">Sample Hand <%= i + 1 %></h4>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;grid-gap:5px;border:2px solid black;padding: 8px;">
                 <% for (let j = 0; j < hands[i].length; j++) { %>
-                    <img src="<%= hands[i][j]['data']['art_small'] %>" alt="<%= hands[i][j]['name'] %>">
+                    <img 
+                        src="<%= hands[i][j]['data']['art_small'] %>" 
+                        alt="<%= hands[i][j]['name'] %>" 
+                        title="<%= hands[i][j]['data']['description'] %>"
+                    >
                 <% } %>
             </div>
         <% } %>
