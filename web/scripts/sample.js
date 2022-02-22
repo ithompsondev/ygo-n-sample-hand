@@ -31,6 +31,30 @@ export function sample(deck) {
     return hands
 }
 
+// It is assumed that each card in the deck has an entry in the DB, since we build the deck first
+// before doing sample pulls
+export async function sampleWithData(deck,cardDB) {
+    shuffle(deck)
+    const handSize = 5
+    let hands = []
+    let hand = []
+    for (let i = deck.length - 1; i >= 0; i--){
+        const cardName = deck[i]
+        // card represents a card object
+        const card = await cardDB.cardExists(cardName)
+        hand.push({ name: cardName, data: card})
+        if (hand.length == handSize) {
+            hands.push(hand)
+            hand = []
+        }
+    }
+
+    if (hand.length > 0) {
+        hands.push(hand)
+    }
+    return hands
+}
+
 function randBetween(min,max) {
     // excluding max
     return Math.floor(Math.random() * (max - min) + min)

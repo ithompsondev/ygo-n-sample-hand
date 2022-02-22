@@ -5,7 +5,7 @@ export default class CardDB {
     constructor() {
         this.db = null
         this.Card = null
-        this.requiredFields = 'name art art_small description'
+        this.exclude = '-_id -__v'
     }
 
     connect(uri) {
@@ -26,25 +26,41 @@ export default class CardDB {
     }
 
     insertCard(cardResponse) {
-        // cardResponse is an array of object literals representing cards
-        for (let i = 0; i < cardResponse.length; i++) {
-            const card = cardResponse[i]
-            const newCard = new this.Card(card)
-            newCard.save().then(() => console.log(`Inserted: ${cardResponse.name}`))
-        }
+        // cardResponse is a card object
+        const card = new this.Card(cardResponse)
+        return card.save()
     }
 
-    // TODO: HOW TO ONLY GET NECESSARY INFORMATION FROM A QUERY
     cardExists(cardName) {
         return new Promise(async (resolve,reject) => {
             try {
-                const card = await this.Card.findOne({ name: cardName }, this.requiredFields)
-                // api/card view expects and array of object literals
-                resolve([card])
+                const card = await this.Card.findOne({ name: cardName }).lean()
+                if (card != null) {
+                    // api/card view expects and array of object literals
+                    resolve(card)
+                } else {
+                    resolve(false)
+                }
             } catch (err) {
                 console.log(err)
                 reject(false)
             }
         })
+    }
+
+    isLink(cardType) {
+        return cardType == 'Link Monster'
+    }
+
+    isPendulum(cardType) {
+        return cardType == 'Pendulum Normal Monster' || cardType == 'Pendulum Effect Monster'
+    }
+
+    isSpell(cardType) {
+        return cardType == 'Spell Card'
+    }
+
+    isTrap(cardType) {
+        return cardType == 'Trap Card'
     }
 }

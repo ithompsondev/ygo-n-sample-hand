@@ -8,9 +8,10 @@
 </head>
 <body>
     <h2><%= name %> Decklist</h2>
-    <h3>Main Deck</h3>
-    <% for (let i = 0; i < deck.length; i++) { %>
-        <div><%= deck[i] %></div>
-    <% } %>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;grid-gap:20px;">
+        <% for (let i = 0; i < deck.length; i++) { %>
+            <img src="<%= deck[i]['art_small'] %>" alt="<%= deck[i]['name'] %>">
+        <% } %>
+    </div>
 </body>
 </html>

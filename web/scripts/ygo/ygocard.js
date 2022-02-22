@@ -19,7 +19,6 @@ function request(endpoint) {
                 reject(err)
             }
         } else {
-            console.log(response)
             reject(`${response.status}: ${response.statusText}`)
         }        
     })
@@ -72,22 +71,47 @@ export function queryCard(cardName) {
 // Make many queries to the api endpoint
 // TODO: If we get a bad request 400, we should still continue to process as many cards as possible
 // optionally returning the bad request
-export function queryCards(cardNames) {
-    let uniqueCardNames = cardsToQueryStr(cardNames)
-    let cardLen = uniqueCardNames.length
+export function queryCards(cardNames,cardDB) {
+    //let uniqueCardNames = cardsToQueryStr(cardNames)
+    let cardLen = cardNames.length
     let responses = []
+    let dbEntries = []
     return new Promise(async (resolve,reject) => {
         for (let i = 0; i < cardLen; i++) {
-            const card = uniqueCardNames[i]
+            const cardName = cardNames[i]
             try {
-                const response = await request(`${endpoint}${nameQuery}${card}`)
-                responses.push(response)
+                const card = await cardDB.cardExists(cardName)
+                if (card) {
+                    // If the card exists in the DB, temp store it in the dbEntry []
+                    console.log(`${cardName} exists in the DB`)
+                    dbEntries.push(card)
+                } else {
+                    // If the card does not exist in the DB, query the endpoint to extrapolate mean. later
+                    const query = cardToQueryStr(cardName)
+                    console.log(`Querying: ${query}`)
+                    const response = await request(`${endpoint}${nameQuery}${query}`)
+                    // We need to immediately store card data after a request to the endpoint
+                    const meaningfulData = await extrapolateMeaningfulCardData(response)
+                    for (let m = 0; m < meaningfulData.length; m++) {
+                        // meaningfulData is an [Cards]
+                        // insertCard expects a card object
+                        // We await the resolution of saving a new entry to the DB to ensure it is added
+                        // before moving on
+                        await cardDB.insertCard(meaningfulData[m])
+                        responses.push(meaningfulData[m])
+                    }
+                }
             } catch (err) {
                 reject(err)
             }
         }
-        const jsonDataCollection = await collectResponseData(responses)
-        resolve(extrapolateMeaningfulCardData(jsonDataCollection))
+
+        if (responses.length > 0) {
+            // If we made atleast 1 call to the endpoint we need to concatenate responses and dbEntries []
+            resolve(responses.concat(dbEntries))
+        } else {
+            resolve(dbEntries)
+        }
     })
 }
 
@@ -106,6 +130,7 @@ function extrapolateMeaningfulCardData(json) {
                 meaningfulData.push(parseMonster(card))
             }
         }
+        // Meaningful data is now [Card objects]
         resolve(meaningfulData)
     })
 }

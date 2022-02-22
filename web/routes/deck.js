@@ -1,12 +1,14 @@
 import express from 'express'
 import { parseDeck } from '../scripts/deckparse.js'
-import { sample } from '../scripts/sample.js'
+import { sample, sampleWithData } from '../scripts/sample.js'
 import { queryCard,queryCards,displayMeaningfulData } from '../scripts/ygo/ygocard.js'
+import { removeDuplicates } from '../scripts/ygo/url.js'
 import CardDB from '../db/carddb.js'
 
-// TODO: TO SAVE DECKLISTS, CREATE USER AUTHENTICATION, OTHERWISE ONLY ONE DECK CAN CURRENTLY BE WORKED ON
-// TODO: VIEW FOR DECKLIST PAGE TO VIEW CURRENTLY SAVED MAIN DECKS
-// TODO: VIEW FOR EDITING CURRENTLY SAVED MAIN DECKS
+// TODO: ERROR CHECKING AND DATA VALIDATION
+// TODO: VALIDATION FOR MINIMUM 40 CARD DECK, MAXIMUM 60 CARD DECK
+// TODO: LOADING YDK COMPATIBLE DECKLISTS FROM FILE, SCRUB EXTRA DECK AND HEADINGS
+// TODO: ERROR HANDLING FOR FETCH WHEN NOT CONNECTED TO INTERNET
 
 export const deckRouter = express.Router()
 // We connect to the carddb whenever this route is mounted
@@ -31,45 +33,15 @@ deckRouter.post('/create',(req,res) => {
     res.redirect(`/deck/${deckName}/decklist`)
 })
 
-// test the ygo api
-deckRouter.get('/api/card/:cardName', async (req,res) => {
-    try {
-        const cardName = req.params.cardName
-        let cardResponse = await cardDB.cardExists(cardName)
-        if (cardResponse) {
-            console.log(`The card: ${cardName} already exists in the DB`)
-        } else {
-            console.log(`The card: ${cardName}, does not exist in the DB. Adding ...`)
-            cardResponse = await queryCard(cardName)
-            cardDB.insertCard(cardResponse)
-        }
-        res.render('api/card',{ cardName: cardName,cardData: cardResponse })
-    } catch (err) {
-        res.render('api/error',{ error: err })
-    }
-})
-
-deckRouter.get('/api/deck/:deckName', async (req,res) => {
-    try {
-        const deckName = req.params.deckName
-        const cardNames = req.session.deck
-        const cardsResponse = await queryCards(cardNames)
-        displayMeaningfulData(cardsResponse)
-        res.render('api/card',{ cardName: deckName,cardData: cardsResponse })
-    } catch (err) {
-        res.render('api/error',{ error: err })
-    }
-})
-
 deckRouter.get('/:deckName/samples', async (req,res) => {
-    let hands = sample(req.session.deck)
-    // Fetch card image urls
-    //await getCardImages(req.session.deck)
+    let hands = await sampleWithData(req.session.deck,cardDB)
+    // hands is [ [{ name,data }] . . . [{ name,data }] ]
     res.render('deck/sample',{ hands: hands })
 })
 
-deckRouter.get('/:deckName/decklist',(req,res) => {
+deckRouter.get('/:deckName/decklist',async (req,res) => {
     const deck = req.session.deck
     const name = req.session.deckName
-    res.render('deck/decklist',{ name: name,deck: deck })
+    const decklist = await queryCards(deck,cardDB)
+    res.render('deck/decklist',{ name: name,deck: decklist })
 })
