@@ -1,17 +1,17 @@
 export function isNotMonster(cardType) {
-    return isSpell(cardType) || isTrap(cardType)
+    return isSpell(cardType) || isTrap(cardType);
 }
 
 export function isMonster(cardType) {
-    return (!isSpell(cardType)) && (!isTrap(cardType))
+    return (!isSpell(cardType)) && (!isTrap(cardType));
 }
 
 export function isSpell(cardType) {
-    return (cardType == 'Spell Card')
+    return (cardType == 'Spell Card');
 }
 
 export function isTrap(cardType) {
-    return (cardType == 'Trap Card')
+    return (cardType == 'Trap Card');
 }
 
 // Parse monster card information from json response in response data[]
@@ -27,16 +27,16 @@ export function parseMonster(card) {
         description: card.desc,
         attack: card.atk,
         defence: card.def
-    }
+    };
 
     if (isLinkMonster(monster.card_type)) {
-        monster.link_value = card.linkval
-        monster.link_arrows = card.linkmarkers
+        monster.link_value = card.linkval;
+        monster.link_arrows = card.linkmarkers;
     } else if (isPendulumMonster(monster.card_type)) {
-        monster.scale = card.scale
+        monster.scale = card.scale;
     }
 
-    return monster
+    return monster;
 }
 
 // Parse spell and trap card information from json response in data[]
@@ -47,31 +47,31 @@ export function parseSpellTrap(card) {
         art: getDefaultImage(card.card_images),
         art_small: getDefaultSmallImage(card.card_images),
         description: card.desc,
-    }
+    };
 
-    const isSpell = notMonster.card_type == 'Spell Card' 
+    const isSpell = notMonster.card_type == 'Spell Card'; 
     if (isSpell) {
-        notMonster.spell_type = card.race
+        notMonster.spell_type = card.race;
     } else {
-        notMonster.trap_type = card.race
+        notMonster.trap_type = card.race;
     }
 
-    return notMonster
+    return notMonster;
 }
 
 function isLinkMonster(cardType) {
-    return (cardType == 'Link Monster')
+    return (cardType == 'Link Monster');
 }
 
 function isPendulumMonster(cardType) {
-    return ((cardType == 'Pendulum Effect Monster') || cardType == ('Pendulum Normal Monster'))
+    return ((cardType == 'Pendulum Effect Monster') || cardType == ('Pendulum Normal Monster'));
 }
 
 // The first image in the artwork array is the default image
 function getDefaultSmallImage(artwork) {
-    return artwork[0]['image_url_small']
+    return artwork[0]['image_url_small'];
 }
 
 function getDefaultImage(artwork) {
-    return artwork[0]['image_url']
+    return artwork[0]['image_url'];
 }

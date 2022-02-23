@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 export default new mongoose.Schema({
     name: { type: String, required: true },
@@ -16,4 +16,4 @@ export default new mongoose.Schema({
     scale: { type: Number, required: false },
     spell_type: { type: String, required: false },
     trap_type: { type:String, required: false }
-})
+});
