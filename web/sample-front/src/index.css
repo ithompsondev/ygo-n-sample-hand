@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
+
+.header {
+    padding: 30px;
+    background: black;
+    color: white;
+    font-size: 35px;
+    font-family: 'Source Sans Pro', sans-serif;
+    text-align: left;
+}
+
+.footer {
+
+}
+
+.option-button-container {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid blue;
+    text-align: center;
+}
+
+.option-button {
+    border: none;
+    border-radius: 2px;
+    background-color: darkgoldenrod;
+    color: black;
+    padding: 15px;
+    width: 50%;
+}
+
+.option-button:hover {
+    background-color: black;
+    color: darkgoldenrod;
+}
+
+.option-description {
+    flex: 1;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid blue;
+}
+
+.option-container {
+    /* flex container */
+    display: flex;
+    padding: 50px;
+    border: 1px solid red;
+}
+
+.create-deck-bg {
+    background: url('../public/create.jpg');
+    background-size: contain;
+}
+
+.upload-deck-bg {
+    background: url('../public/upload.jpg');
+    background-size: contain;
+}
