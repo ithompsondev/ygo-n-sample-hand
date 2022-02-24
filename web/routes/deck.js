@@ -37,6 +37,8 @@ deckRouter.get('/:deckName/samples', async (req,res) => {
     let hands = await sampleWithData(req.session.deck,cardDB);
     // hands is [ [{ name,data }] . . . [{ name,data }] ]
     res.render('deck/sample',{ hands: hands });
+    // RESPONDING TO FRONT END (LIKE AN API ENDPOINT)
+    // res.json({ hands: hands })
 });
 
 deckRouter.get('/:deckName/decklist',async (req,res) => {
@@ -44,4 +46,6 @@ deckRouter.get('/:deckName/decklist',async (req,res) => {
     const name = req.session.deckName;
     const decklist = await queryCards(deck,cardDB);
     res.render('deck/decklist',{ name: name,deck: decklist });
+    // RESPONDING TO FRONT END
+    // res.json({ name: name,deck: decklist })
 });

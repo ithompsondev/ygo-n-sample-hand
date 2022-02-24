@@ -1,74 +1,97 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import 'bootstrap/dist/css/bootstrap.css'
+import './images.css'
+import './fonts.css'
 
 export function Header() {
     return (
-        <div className='header'>
-            <h1>YGO Deck Sampler</h1>
+        <div className='container-fluid text-warning pt-3 heading'>
+            <h1 className='text-right'>YGO5 Draw</h1>
         </div>
     );
 }
 
-// Component for a div that contains a button (flex floated)
-export function OptionButtonContainer(props) {
+// Component that allows us to place other components next to each other using bootstrap grid
+export function OptionContainer() {
     return (
-        <div className='option-button-container'>
-            <OptionButton name={ props.buttonName } />
+        <div className='row align-items-center p-3'>
+            <Option data={{component: <UploadButton />,className: 'text-center col-md-4 container'}}/>
+            <Option data={{component: <FillerText text={'OR'}/>,className: 'col-md-1'}} />
+            <Option data={{component: <DeckForm />,className: 'col-md-4 container'}}/>
         </div>
     );
 }
 
-// Component for a button
-export function OptionButton(props) {
+// Component that represents text
+export function FillerText(props) {
     return (
-        <button className='option-button' type='submit'>
-            { props.name }
-        </button>
+        <h4 className='text-warning text-center'>{props.text}</h4>
     )
 }
 
-// Component for a div that contains text (flex floated)
-export function OptionDescription(props) {
+// Component that can be placed next to each other. Also wraps around other components such as text and buttons
+export function Option(props) {
     return (
-        <div className='option-description'>
-            { props.description }
+        <div className={props.data.className}>
+            {props.data.component}
         </div>
     );
 }
 
-// Component for a div that contains flex floated elements
-export function CreateDeckContainer() {
-    return (
-        <div className='option-container create-deck-bg'>
-            <OptionButtonContainer buttonName={'Create Deck'} />
-            <OptionDescription description={
-                'Manually enter card names and proposed frequencies'
-            }
-        />
-        </div>
-    );
+export class UploadButton extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+
+    render() {
+        return (
+            <button className='btn-lg btn-warning'>
+                <span className='glyphicon glyphicon-upload'></span>
+                Upload YDK Decklist
+            </button>
+        );
+    }
 }
 
-// Component for a div that contains flex floated elements
-export function UploadDeckContainer() {
-    return (
-        <div className='option-container upload-deck-bg'>
-            <OptionDescription description={
-                    'Uploade a .ydk compatible deck file'
-                } 
-            />
-            <OptionButtonContainer buttonName={'Upload Deck'} />
-        </div>
-    )
+export class DeckForm extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <form className='was-validated'>
+                <this.DeckName />
+                <this.DeckList />
+                <button type='submit' className='btn-lg btn-warning mt-3'>Create</button>
+            </form>                       
+        );
+    }
+
+    DeckName() {
+        return (
+            <div className='form-group mb-3'>
+                <input type='text' placeholder='Deck name' className='form-control' required/>
+            </div>
+        );
+    }
+
+    DeckList() {
+        let format = 'EXACT CARD NAME 1\nPot of Greed 3\nChange of Heart 3\nGraceful Charity 3'
+        return (
+            <div className='form-group'>
+                <textarea className='form-control' rows='15' required>{format}</textarea>
+            </div>
+        );
+    }
 }
 
 export function Index() {
     return (
         <Fragment>
             <Header />
-            <CreateDeckContainer />
-            <UploadDeckContainer />
+            <OptionContainer />
         </Fragment>
     );
 }
