@@ -1,102 +1,216 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
-import 'bootstrap/dist/css/bootstrap.css'
-import './images.css'
-import './fonts.css'
+import 'bootstrap/dist/css/bootstrap.css';
+import './manual.css';
 
-export function Header() {
-    return (
-        <div className='container-fluid text-warning pt-3 heading'>
-            <h1 className='text-right'>YGO5 Draw</h1>
-        </div>
-    );
-}
-
-// Component that allows us to place other components next to each other using bootstrap grid
-export function OptionContainer() {
-    return (
-        <div className='row align-items-center p-3'>
-            <Option data={{component: <UploadButton />,className: 'text-center col-md-4 container'}}/>
-            <Option data={{component: <FillerText text={'OR'}/>,className: 'col-md-1'}} />
-            <Option data={{component: <DeckForm />,className: 'col-md-4 container'}}/>
-        </div>
-    );
-}
-
-// Component that represents text
-export function FillerText(props) {
-    return (
-        <h4 className='text-warning text-center'>{props.text}</h4>
-    )
-}
-
-// Component that can be placed next to each other. Also wraps around other components such as text and buttons
-export function Option(props) {
-    return (
-        <div className={props.data.className}>
-            {props.data.component}
-        </div>
-    );
-}
-
-export class UploadButton extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
+export class Button extends React.Component {
     render() {
         return (
-            <button className='btn-lg btn-warning'>
-                <span className='glyphicon glyphicon-upload'></span>
-                Upload YDK Decklist
+            <button 
+                className='btn btn-warning mt-2 mb-2'
+                type='submit'
+            >
+                {this.props.formState.text}
             </button>
         );
     }
 }
 
-export class DeckForm extends React.Component {
+export class DeckListTextArea extends React.Component {
+    render() {
+        return (
+            <div className='form-group'>
+                <textarea 
+                    className='form-control lock-size' 
+                    value={this.props.formState.deckList} 
+                    rows='15' 
+                    onChange={this.props.formState.handler} 
+                    required
+                ></textarea>
+                <small className='form-text text-muted'><b>Use exact card names</b></small>
+            </div>
+        );
+    }
+}
+
+export class DeckNameInput extends React.Component {
+    render() {
+        return (
+            <div className='form-group mb-2'>
+                <input 
+                    className='form-control' 
+                    value={this.props.formState.deckName} 
+                    type='text' 
+                    placeholder='Deck Name' 
+                    onChange={this.props.formState.handler} 
+                    required
+                />
+            </div>
+        );
+    } 
+}
+
+export class DeckListForm extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            deckName: '',
+            deckList: 'Pot of Greed 3\nGraceful Charity 3\nChange of Heart 3',
+            isValidDeckList: true
+        };
+        this.handleDeckNameChange = this.handleDeckNameChange.bind(this); 
+        this.handleDeckListChange = this.handleDeckListChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this); 
+    }
+
+    handleDeckNameChange(event) {
+        this.setState({ deckName: event.target.value });
+    }
+
+    handleDeckListChange(event) {
+        this.setState({ deckList: event.target.value });
+    }
+
+    handleSubmit(event) {
+        const isValidDeckList = this.validateDeckList();
+        if (isValidDeckList) {
+            console.log('VALID DECK LIST');
+            this.setState({ isValidDeckList: true });
+            // POST TO BACKEND
+        } else {
+            console.log('INVALID DECK LIST')
+            this.setState({ isValidDeckList: false });
+        }
+        event.preventDefault();
+    }
+
+    validateDeckList() {
+        return false;
     }
 
     render() {
-        return (
-            <form className='was-validated'>
-                <this.DeckName />
-                <this.DeckList />
-                <button type='submit' className='btn-lg btn-warning mt-3'>Create</button>
-            </form>                       
-        );
+        if (this.state.isValidDeckList) {
+            return (
+                <form 
+                    onSubmit={this.handleSubmit}
+                    className='col-md-5 container border border-warning'
+                >
+                    <DeckNameInput formState={
+                            { 
+                                deckName: this.state.deckName,
+                                handler: this.handleDeckNameChange 
+                            }
+                        }
+                    />
+                    <DeckListTextArea formState={
+                            {
+                                deckList: this.state.deckList,
+                                handler: this.handleDeckListChange
+                            }
+                        }
+                    />
+                    <Button 
+                        formState={
+                            {
+                                text: 'Create'
+                            }
+                        }
+                    />
+                </form>
+            );
+        } else {
+            return this.renderWithError();
+        }
     }
 
-    DeckName() {
+    // If the deck list is not valid
+    renderWithError() {
         return (
-            <div className='form-group mb-3'>
-                <input type='text' placeholder='Deck name' className='form-control' required/>
-            </div>
+            <Fragment>
+                <div 
+                    className='alert alert-danger alert-dismissable show fade' 
+                    role='alert'>
+                        Invalid card formatting
+                </div>
+                <form 
+                    onSubmit={this.handleSubmit}
+                    className='col-md-5 container border border-warning'
+                >
+                    <DeckNameInput formState={
+                            { 
+                                deckName: this.state.deckName,
+                                handler: this.handleDeckNameChange 
+                            }
+                        }
+                    />
+                    <DeckListTextArea formState={
+                            {
+                               deckList: this.state.deckList,
+                                handler: this.handleDeckListChange
+                            }
+                        }
+                    />
+                    <Button 
+                        formState={
+                            {
+                                text: 'Create'
+                            }
+                        }
+                    />
+                </form>
+            </Fragment>
         );
     }
+}
 
-    DeckList() {
-        let format = 'EXACT CARD NAME 1\nPot of Greed 3\nChange of Heart 3\nGraceful Charity 3'
+export class TextJumbotron extends React.Component {
+    render() {
         return (
-            <div className='form-group'>
-                <textarea className='form-control' rows='15' required>{format}</textarea>
+            <div className='jumbotron'>
+                <h3>{this.props.instruction}</h3>
             </div>
         );
     }
 }
 
-export function Index() {
-    return (
-        <Fragment>
-            <Header />
-            <OptionContainer />
-        </Fragment>
-    );
+export class InstructionJumbotronContainer extends React.Component {
+    render() {
+        const deckName = 'Enter a deckname';
+        const cardList = 'Enter card name and number';
+        return (
+            <div className='col-md-7 container text-left border border-warning'>
+                <TextJumbotron instruction={deckName} />
+                <TextJumbotron instruction={cardList} />
+            </div>
+        );
+    }
+}
+
+export class PageHeader extends React.Component {
+    render() {
+        return (
+            <div className='container-fluid bg-warning'>
+                <h1 className='text-dark'>YGO5 DRAW</h1>
+            </div>
+        );
+    }
+}
+
+export class PageContent extends React.Component {
+    render() {
+        return (
+            <Fragment>
+                <PageHeader />
+                <div className='row align-items-center p-5'>
+                    <InstructionJumbotronContainer />
+                    <DeckListForm />
+                </div>
+            </Fragment>
+        );
+    }
 }
 
 ReactDOM.render(
-    <Index />,
+    <PageContent />,
     document.getElementById('root')
-)
+);
