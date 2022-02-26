@@ -1,5 +1,5 @@
 import express from 'express';
-import { parseDeck } from '../scripts/deckparse.js';
+import { normalize } from '../scripts/deckparse.js';
 import { sampleWithData } from '../scripts/sample.js';
 import { queryCards } from '../scripts/ygo/ygocard.js';
 import CardDB from '../db/carddb.js';
@@ -26,17 +26,10 @@ deckRouter.post('/create',(req,res) => {
     const deckList = req.body.deckList;
     // We save the new deck inside our session object that persists, our session only saves now since
     // we update the session variables.
-    req.session.deck = parseDeck(deckList); // RE-WRITE THIS TO PARSE AN ARRAY OF CARDS AND NOT A STRING
+    req.session.deckList = deckList;
+    req.session.normalizedDeckList = normalize(deckList);
     req.session.deckName = deckName;
-    res.redirect(`/deck/${deckName}/decklist`);
-});
-
-deckRouter.get('/:deckName/samples', async (req,res) => {
-    let hands = await sampleWithData(req.session.deck,cardDB);
-    // hands is [ [{ name,data }] . . . [{ name,data }] ]
-    res.render('deck/sample',{ hands: hands });
-    // RESPONDING TO FRONT END (LIKE AN API ENDPOINT)
-    // res.json({ hands: hands })
+    res.json({ status: 200, created: true });
 });
 
 deckRouter.get('/:deckName/decklist',async (req,res) => {
@@ -46,4 +39,12 @@ deckRouter.get('/:deckName/decklist',async (req,res) => {
     res.render('deck/decklist',{ name: name,deck: decklist });
     // RESPONDING TO FRONT END
     // res.json({ name: name,deck: decklist })
+});
+
+deckRouter.get('/:deckName/samples', async (req,res) => {
+    let hands = await sampleWithData(req.session.deck,cardDB);
+    // hands is [ [{ name,data }] . . . [{ name,data }] ]
+    res.render('deck/sample',{ hands: hands });
+    // RESPONDING TO FRONT END (LIKE AN API ENDPOINT)
+    // res.json({ hands: hands })
 });

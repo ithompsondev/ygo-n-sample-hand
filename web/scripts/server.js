@@ -2,6 +2,7 @@ import express from 'express';
 import session from 'express-session';
 import connMongoSession from 'connect-mongodb-session';
 import { connectSessionDB,sessionURI } from '../db/db.js';
+import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,9 +17,15 @@ export function useEJS(server) {
     server.set('view engine','ejs');
 }
 
+export function useCORS(server) {
+    // Specify the origin of the react app frontend
+    server.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+}
+
 export function accessRequestBody(server) {
     // Allows us to access the request body to get form information
     server.use(express.urlencoded({ extended: true }));
+    server.use(express.json());
 }
 
 export function mountRouter(server,mount,router) {

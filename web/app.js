@@ -1,4 +1,14 @@
-import { setup,useEJS,mountRouter,port,host,accessRequestBody,initSessions,connectSessions } from './scripts/server.js';
+import {
+    port,
+    host, 
+    setup,
+    useEJS,
+    useCORS,
+    mountRouter,
+    initSessions,
+    connectSessions,
+    accessRequestBody, 
+} from './scripts/server.js';
 import { deckRouter } from './routes/deck.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -6,12 +16,22 @@ dotenv.config();
 const sessionDB = connectSessions();
 const app = setup();
 useEJS(app);
+useCORS(app);
 initSessions(app);
 accessRequestBody(app);
 
 mountRouter(app,'/deck',deckRouter);
 app.get('/',(req,res) => {
-    res.json({ status: 200 });
+    let deckName = '';
+    let deckList = 'Pot of Greed 3\nGraceful Charity 3\nChange of Heart 3';
+    if (req.session.deckName) {
+        deckName = req.session.deckName;
+    }
+    if (req.session.deckList) {
+        deckList = req.session.deckList;
+        deckList = deckList.reduce((deckListStr,card) => { return deckListStr + card + '\n'; },'');
+    }
+    res.json({ status: 200,deckName: deckName,deckList: deckList });
 });
 
 app.listen(port,() => {

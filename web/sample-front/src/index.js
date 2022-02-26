@@ -55,13 +55,38 @@ export class DeckListForm extends React.Component {
         super(props);
         this.state = {
             deckName: '',
-            deckList: 'Pot of Greed 3\nGraceful Charity 3\nChange of Heart 3',
+            deckList: '',
             isValidDeckList: true,
             error: null
         };
         this.handleDeckNameChange = this.handleDeckNameChange.bind(this); 
         this.handleDeckListChange = this.handleDeckListChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this); 
+    }
+
+    // We make an initial request to the server on page load to get our previous session data
+    // that way the user won't have to retype all the form data
+    componentDidMount() {
+        fetch('http://localhost:8000/',{
+            method: 'GET',
+            credentials: 'include'
+        }).then(
+            response => {
+                if (response.ok) {
+                    return response.json();
+                }
+            }
+        ).then(
+            jResponse => {
+                console.log('We received initial data from server');
+                console.log(`Deck name: ${jResponse.deckName}`);
+                console.log(`Deck list: ${jResponse.deckList}`);
+                this.setState({
+                    deckName: jResponse.deckName,
+                    deckList: jResponse.deckList
+                });
+            }
+        ).catch(err => { console.log(err) });
     }
 
     handleDeckNameChange(event) {
@@ -77,12 +102,34 @@ export class DeckListForm extends React.Component {
         console.log(deck);
         const isValidDeckList = this.validateDeckList(deck);
         if (isValidDeckList.valid) {
-            console.log('Valid Deck');
             this.setState({ isValidDeckList: true });
             // POST TO BACKEND
+            fetch('http://localhost:8000/deck/create',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    deckName: this.state.deckName,
+                    deckList: deck
+                }),
+                credentials: 'include'
+            }).then(
+                response => {
+                    if (response.ok) {
+                    return response.json();
+                    }
+                }
+            ).then(
+                jResponse => {
+                    console.log(jResponse);
+                }
+            ).catch(
+                err => {
+                    console.log(err);
+                }
+            );
         } else {
-            console.log('Invalid Deck');
-            console.log(`Error: ${isValidDeckList.error}`);
             this.setState({ isValidDeckList: false,error: isValidDeckList.error });
         }
         event.preventDefault();

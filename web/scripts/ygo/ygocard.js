@@ -28,30 +28,6 @@ function cardToQueryStr(card) {
     return encode(card);
 }
 
-// Expects an array of card names
-function cardsToQueryStr(cardNames) {
-    // We want to remove duplicate card names before making the query to avoid duplicate requests
-    const uniqueCardNames = removeDuplicates(cardNames);
-    return uniqueCardNames.map(card => cardToQueryStr(card));
-}
-
-// Since each json response is of the format { data: [{} . . . {}] }
-// We need to extract each object literal in the data field of each json response
-// Then insert it into one mega collection
-function collectResponseData(responses) {
-    return new Promise((resolve,reject) => {
-        const data = [];
-        for (let i = 0; i < responses.length; i++) {
-            const response = responses[i];
-            for (let j = 0; j < response.data.length; j++) {
-                // In case a json response has more than 1 entry in data[]
-                data.push(response.data[j]);
-            }
-        }
-        resolve({data: data});
-    });
-}
-
 // Make a single query to the api endpoint
 export function queryCard(cardName) {
     return new Promise(async (resolve,reject) => {
