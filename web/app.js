@@ -11,7 +11,7 @@ accessRequestBody(app);
 
 mountRouter(app,'/deck',deckRouter);
 app.get('/',(req,res) => {
-    res.render('index')
+    res.json({ status: 200 });
 });
 
 app.listen(port,() => {

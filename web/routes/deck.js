@@ -4,9 +4,7 @@ import { sampleWithData } from '../scripts/sample.js';
 import { queryCards } from '../scripts/ygo/ygocard.js';
 import CardDB from '../db/carddb.js';
 
-// TODO: ERROR CHECKING AND DATA VALIDATION
 // TODO: VALIDATION FOR MINIMUM 40 CARD DECK, MAXIMUM 60 CARD DECK
-// TODO: LOADING YDK COMPATIBLE DECKLISTS FROM FILE, SCRUB EXTRA DECK AND HEADINGS
 // TODO: ERROR HANDLING FOR FETCH WHEN NOT CONNECTED TO INTERNET
 
 export const deckRouter = express.Router();
@@ -23,12 +21,12 @@ cardDB
     );
 
 deckRouter.post('/create',(req,res) => {
-    console.log('received deck list')
-    // TODO: Error checking
+    console.log('received deck list');
     const deckName = req.body.deckName;
     const deckList = req.body.deckList;
-    // We save the new deck inside our session object that persists
-    req.session.deck = parseDeck(deckList);
+    // We save the new deck inside our session object that persists, our session only saves now since
+    // we update the session variables.
+    req.session.deck = parseDeck(deckList); // RE-WRITE THIS TO PARSE AN ARRAY OF CARDS AND NOT A STRING
     req.session.deckName = deckName;
     res.redirect(`/deck/${deckName}/decklist`);
 });

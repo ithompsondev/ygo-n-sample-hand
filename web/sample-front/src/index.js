@@ -23,7 +23,7 @@ export class DeckListTextArea extends React.Component {
                 <textarea 
                     className='form-control lock-size' 
                     value={this.props.formState.deckList} 
-                    rows='15' 
+                    rows='12' 
                     onChange={this.props.formState.handler} 
                     required
                 ></textarea>
@@ -56,7 +56,8 @@ export class DeckListForm extends React.Component {
         this.state = {
             deckName: '',
             deckList: 'Pot of Greed 3\nGraceful Charity 3\nChange of Heart 3',
-            isValidDeckList: true
+            isValidDeckList: true,
+            error: null
         };
         this.handleDeckNameChange = this.handleDeckNameChange.bind(this); 
         this.handleDeckListChange = this.handleDeckListChange.bind(this);
@@ -72,29 +73,69 @@ export class DeckListForm extends React.Component {
     }
 
     handleSubmit(event) {
-        const isValidDeckList = this.validateDeckList();
-        if (isValidDeckList) {
-            console.log('VALID DECK LIST');
+        const deck = this.transformDeckList(this.state.deckList);
+        console.log(deck);
+        const isValidDeckList = this.validateDeckList(deck);
+        if (isValidDeckList.valid) {
+            console.log('Valid Deck');
             this.setState({ isValidDeckList: true });
             // POST TO BACKEND
         } else {
-            console.log('INVALID DECK LIST')
-            this.setState({ isValidDeckList: false });
+            console.log('Invalid Deck');
+            console.log(`Error: ${isValidDeckList.error}`);
+            this.setState({ isValidDeckList: false,error: isValidDeckList.error });
         }
         event.preventDefault();
     }
 
-    validateDeckList() {
-        return false;
+    // Convert String to Array
+    transformDeckList(deckList) {
+        let deck = deckList.split('\n');
+        deck = deck.filter(card => { return card !== '' });
+        deck.map(card => card.replace(/\r?\n|\n/g,''));
+        return deck;
+    }
+
+    validateDeckList(deck) {
+        // For each card in the deck, check if it is valid
+        // If validation fails we pass back an error so we can set the error state
+        let totalCards = 0;
+        let encounteredCards = {};
+        for (let i = 0; i < deck.length; i++) {
+            const card = deck[i];
+            const match = card.match(/(.+)\sx*([1-3])/);
+            if (match == null) {
+                return { valid: false,error: `Invalid card formatting: '${card}'` };
+            } else {
+                // Match card number to get total number of cards in deck
+                const numberMatched = Number(match[2]); 
+                totalCards += numberMatched; 
+                let cardName = match[1].toLowerCase();
+                if (encounteredCards[cardName]) {
+                    encounteredCards[cardName] += numberMatched;
+                    if (encounteredCards[cardName] > 3) {
+                        return { valid: false,error: `Too many copies of '${cardName}', ${encounteredCards[cardName]}` };
+                    }
+                } else {
+                    encounteredCards[cardName] = numberMatched;
+                }
+            }
+        }
+        if (totalCards >= 40 && totalCards <= 60) {
+            return { valid: true };
+        } else {
+            if (totalCards < 40) {
+                return { valid: false,error: `Too few cards in main deck: ${totalCards}` };
+            } else {
+                return { valid: false,error: `Too many cards in main deck: ${totalCards}` };
+            }
+        }
     }
 
     render() {
         if (this.state.isValidDeckList) {
             return (
-                <form 
-                    onSubmit={this.handleSubmit}
-                    className='col-md-5 container border border-warning'
-                >
+                <form onSubmit={this.handleSubmit}>
                     <DeckNameInput formState={
                             { 
                                 deckName: this.state.deckName,
@@ -130,12 +171,9 @@ export class DeckListForm extends React.Component {
                 <div 
                     className='alert alert-danger alert-dismissable show fade' 
                     role='alert'>
-                        Invalid card formatting
+                        {this.state.error}
                 </div>
-                <form 
-                    onSubmit={this.handleSubmit}
-                    className='col-md-5 container border border-warning'
-                >
+                <form onSubmit={this.handleSubmit}>
                     <DeckNameInput formState={
                             { 
                                 deckName: this.state.deckName,
@@ -163,6 +201,16 @@ export class DeckListForm extends React.Component {
     }
 }
 
+export class DeckListFormSection extends React.Component {
+    render() {
+        return (
+            <div className='col-md-5'>
+                <DeckListForm />
+            </div>
+        );
+    }
+}
+
 export class TextJumbotron extends React.Component {
     render() {
         return (
@@ -173,14 +221,36 @@ export class TextJumbotron extends React.Component {
     }
 }
 
-export class InstructionJumbotronContainer extends React.Component {
+export class InstructionJumbotronSection extends React.Component {
     render() {
         const deckName = 'Enter a deckname';
         const cardList = 'Enter card name and number';
         return (
-            <div className='col-md-7 container text-left border border-warning'>
+            <div className='col-md-7 text-left'>
                 <TextJumbotron instruction={deckName} />
                 <TextJumbotron instruction={cardList} />
+            </div>
+        );
+    }
+}
+
+export class PageContentRow extends React.Component {
+    render() {
+        return (
+            <div className='row align-items-center p-5'>
+                <InstructionJumbotronSection />
+                <DeckListFormSection />
+            </div>
+        );
+    }
+}
+
+// Stops the page from being horizontally scrollable: container -> row -> columns
+export class PageContentContainer extends React.Component {
+    render() {
+        return (
+            <div className='container'>
+                <PageContentRow />
             </div>
         );
     }
@@ -196,21 +266,19 @@ export class PageHeader extends React.Component {
     }
 }
 
-export class PageContent extends React.Component {
+export class Page extends React.Component {
     render() {
+        // Initial get request to start
         return (
             <Fragment>
                 <PageHeader />
-                <div className='row align-items-center p-5'>
-                    <InstructionJumbotronContainer />
-                    <DeckListForm />
-                </div>
+                <PageContentContainer />
             </Fragment>
         );
     }
 }
 
 ReactDOM.render(
-    <PageContent />,
+    <Page />,
     document.getElementById('root')
 );
