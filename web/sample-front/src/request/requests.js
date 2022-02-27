@@ -43,6 +43,6 @@ export async function downloadDeck(downloadDeckHandler) {
     );
     const jResponse = await response.json();
     if (jResponse.status === 200) {
-        downloadDeckHandler(jResponse.deckName,jResponse.deck);
+        downloadDeckHandler(jResponse.deckName,jResponse.deck,jResponse.errors);
     }
 }

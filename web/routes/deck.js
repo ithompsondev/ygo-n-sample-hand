@@ -39,7 +39,7 @@ deckRouter.get('/decklist',async (req,res) => {
     //res.render('deck/decklist',{ name: name,deck: decklist });
     // RESPONDING TO FRONT END
     // res.json({ name: name,deck: decklist })
-    res.json({ status: 200,deckName: name,deck: decklist });
+    res.json({ status: 200,deckName: name,deck: decklist.cards,errors: decklist.errors });
 });
 
 deckRouter.get('/:deckName/samples', async (req,res) => {

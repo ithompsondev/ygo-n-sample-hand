@@ -6,7 +6,7 @@ const endpoint = 'https://db.ygoprodeck.com/api/v7/cardinfo.php';
 const nameQuery = '?name=';
 
 // Promise to get the json response after we made a request to the specified endpoint
-function request(endpoint) {
+function request(endpoint,cardName) {
     return new Promise(async (resolve,reject) => {
         const response = await fetch(endpoint);
         if (response.ok) {
@@ -16,7 +16,7 @@ function request(endpoint) {
                 reject(err);
             }
         } else {
-            reject(`${response.status}: ${response.statusText}`);
+            reject(`Could not find card: '${cardName}'`);
         }        
     });
 }
@@ -49,6 +49,7 @@ export function queryCards(cardNames,cardDB) {
     let cardLen = cardNames.length;
     let responses = [];
     let dbEntries = [];
+    let errors = [];
     return new Promise(async (resolve,reject) => {
         for (let i = 0; i < cardLen; i++) {
             const cardName = cardNames[i];
@@ -62,16 +63,20 @@ export function queryCards(cardNames,cardDB) {
                     // If the card does not exist in the DB, query the endpoint to extrapolate mean. later
                     const query = cardToQueryStr(cardName);
                     console.log(`Querying: ${query}`);
-                    const response = await request(`${endpoint}${nameQuery}${query}`);
-                    // We need to immediately store card data after a request to the endpoint
-                    const meaningfulData = await extrapolateMeaningfulCardData(response);
-                    for (let m = 0; m < meaningfulData.length; m++) {
-                        // meaningfulData is an [Cards]
-                        // insertCard expects a card object
-                        // We await the resolution of saving a new entry to the DB to ensure it is added
-                        // before moving on
-                        await cardDB.insertCard(meaningfulData[m]);
-                        responses.push(meaningfulData[m]);
+                    try {
+                        const response = await request(`${endpoint}${nameQuery}${query}`,cardName);
+                        // We need to immediately store card data after a request to the endpoint
+                        const meaningfulData = await extrapolateMeaningfulCardData(response);
+                        for (let m = 0; m < meaningfulData.length; m++) {
+                            // meaningfulData is an [Cards]
+                            // insertCard expects a card object
+                            // We await the resolution of saving a new entry to the DB to ensure it is added
+                            // before moving on
+                            await cardDB.insertCard(meaningfulData[m]);
+                            responses.push(meaningfulData[m]);
+                        }
+                    } catch (err) {
+                        errors.push(err);
                     }
                 }
             } catch (err) {
@@ -79,11 +84,12 @@ export function queryCards(cardNames,cardDB) {
             }
         }
 
+        if (errors.length == 0) { errors = null; }
         if (responses.length > 0) {
             // If we made atleast 1 call to the endpoint we need to concatenate responses and dbEntries []
-            resolve(responses.concat(dbEntries));
+            resolve({ cards: responses.concat(dbEntries),errors: errors });
         } else {
-            resolve(dbEntries);
+            resolve({ cards: dbEntries,errors: errors });
         }
     });
 }
