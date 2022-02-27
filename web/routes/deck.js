@@ -29,16 +29,17 @@ deckRouter.post('/create',(req,res) => {
     req.session.deckList = deckList;
     req.session.normalizedDeckList = normalize(deckList);
     req.session.deckName = deckName;
-    res.json({ status: 200, created: true });
+    res.json({ status: 200, deckCreated: true });
 });
 
-deckRouter.get('/:deckName/decklist',async (req,res) => {
-    const deck = req.session.deck;
+deckRouter.get('/decklist',async (req,res) => {
+    const deck = req.session.normalizedDeckList;
     const name = req.session.deckName;
     const decklist = await queryCards(deck,cardDB);
-    res.render('deck/decklist',{ name: name,deck: decklist });
+    //res.render('deck/decklist',{ name: name,deck: decklist });
     // RESPONDING TO FRONT END
     // res.json({ name: name,deck: decklist })
+    res.json({ status: 200,deckName: name,deck: decklist });
 });
 
 deckRouter.get('/:deckName/samples', async (req,res) => {
