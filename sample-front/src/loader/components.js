@@ -4,7 +4,7 @@ export class Spinner extends React.Component {
     render() {
         return (
             <div 
-                className='spinner-border spinner-border-lg text-warning'
+                className='spinner-border spinner-border-lg red'
             ></div>
         );
     }
@@ -13,9 +13,10 @@ export class Spinner extends React.Component {
 export class DownloadIndicator extends React.Component {
     render() {
         return (
-            <div className='col-md-12 text-center'>
+            <div className='col-md-12 text-center site-text'>
                 <Spinner /><br/>
-                <h2>Dowloading deck information</h2>
+                <h1>Fetching deck information</h1>
+                <h2>This may take a while</h2>
             </div>
         );
     }

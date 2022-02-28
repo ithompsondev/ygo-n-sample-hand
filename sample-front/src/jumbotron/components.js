@@ -6,7 +6,7 @@ export class TextJumbotron extends React.Component {
     render() {
         return (
             <div className='jumbotron'>
-                <h2 className='stroke-warning'><b>{this.props.instruction}</b></h2>
+                <h1 className='red black-stroke'><b>{this.props.instruction}</b></h1>
             </div>
         );
     }

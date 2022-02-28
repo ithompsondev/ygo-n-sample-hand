@@ -7,8 +7,8 @@ export class ViewDeckListButton extends React.Component {
         return (
             <Fragment>
                 <div className='col-md-12 btn-group'>
-                    <button type='submit' onClick={this.props.handler} className='btn btn-block btn-lg btn-warning mb-3'>
-                        View Deck
+                    <button type='submit' onClick={this.props.handler} className='reverse-button-border btn btn-block btn-lg btn-dark mb-3'>
+                        <h3>View Deck</h3>
                     </button>
                 </div>    
             </Fragment>
@@ -21,8 +21,8 @@ export class StartSamplingButton extends React.Component {
         return (
             <Fragment>
                 <div className='col-md-12 btn-group'>
-                    <button type='submit' onClick={this.props.handler} className='btn btn-lg btn-warning mb-3'>
-                        Draw sample Hands
+                    <button type='submit' onClick={this.props.handler} className='reverse-button-border btn btn-lg btn-dark mb-3'>
+                        <h3>Draw Sample Hands</h3>
                     </button>
                 </div>
             </Fragment>
@@ -36,8 +36,8 @@ export class ChangeDeckListButton extends React.Component {
         return (
             <Fragment>
                 <div className='col-md-12 btn-group'>
-                    <button type='submit' onClick={this.props.handler} className='btn btn-lg btn-warning'>
-                        Alter Deck List
+                    <button type='submit' onClick={this.props.handler} className='reverse-button-border btn btn-lg btn-dark'>
+                        <h3>Change Deck List</h3>
                     </button>
                 </div>
             </Fragment>

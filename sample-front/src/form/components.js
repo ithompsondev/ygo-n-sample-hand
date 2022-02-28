@@ -6,7 +6,7 @@ export class Button extends React.Component {
     render() {
         return (
             <button 
-                className='btn btn-warning mt-2 mb-2'
+                className='reverse-button-border btn btn-danger red-button mt-2 mb-2'
                 type='submit'
             >
                 {this.props.formState.text}

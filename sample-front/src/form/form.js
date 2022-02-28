@@ -7,7 +7,7 @@ import { postDeckList, preloadSessionData } from '../request/requests.js';
 export class DeckListFormSection extends React.Component {
     render() {
         return (
-            <div className='col-md-5'>
+            <div className='form-border bg-dark p-2 col-md-5'>
                 <DeckListForm handler={this.props.handler}/>
             </div>
         );
@@ -107,7 +107,7 @@ export class DeckListForm extends React.Component {
     render() {
         if (this.state.isValidDeckList) {
             return (
-                <form onSubmit={this.handleSubmit}>
+                <form className='p-2' onSubmit={this.handleSubmit}>
                     <DeckNameInput formState={
                             { 
                                 deckName: this.state.deckName,

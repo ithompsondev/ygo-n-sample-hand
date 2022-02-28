@@ -5,12 +5,9 @@ import '../styles/manual.css';
 
 export class InstructionJumbotronSection extends React.Component {
     render() {
-        const deckName = 'Enter a deckname';
-        const cardList = 'Enter card name and number';
+        const deckName = 'Check your main deck\'s consistency by entering your deck list';
         return (
             <div className='col-md-7 text-left'>
-                <TextJumbotron instruction={this.props.instruction.deckName} />
-                <TextJumbotron instruction={this.props.instruction.cardList} />
             </div>
         );
     }

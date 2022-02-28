@@ -47,11 +47,13 @@ export class DeckListViewer extends React.Component {
         }
 
         return (
-            <div className='row align-items-center mt-5'>
-                <div className='col-md-12'><h3>{this.props.deck.name}</h3> </div>
+            <div className='sample-viewer p-3 col-md-12 align-items-center mt-5'>
+                <div className='col-md-12 site-text'><h2>{this.props.deck.name}</h2> </div>
                 {sections}
-                <div className='col-md-8'></div>
-                <div className='col-md-4 justify-right'><h4>{this.props.deck.deck.length} cards</h4></div>
+                <div className='row'>
+                    <div className='col-md-8'></div>
+                    <div className='col-md-4 justify-right site-text'><h3>{this.props.deck.deck.length} cards</h3></div>
+                </div>
             </div>
         );    
     }
@@ -60,8 +62,8 @@ export class DeckListViewer extends React.Component {
 export class ReturnOption extends React.Component {
     render() {
         return (
-            <div className='col-md-4 mt-5 btn-group'>
-                <button className='btn p-3 btn-large btn-warning' onClick={this.props.handler}>Return</button>
+            <div className='col-md-4 mt-3 mb-3 btn-group'>
+                <button className='button-border red btn p-3 btn-lg btn-dark' onClick={this.props.handler}><h4>Return</h4></button>
             </div>
         );
     }

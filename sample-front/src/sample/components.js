@@ -5,8 +5,8 @@ import '../styles/manual.css';
 export class ResampleButton extends React.Component {
     render() {
         return (
-            <div className='col-md-4 mt-5 btn-group'>
-                <button className='btn p-3 btn-large btn-warning' onClick={this.props.handler}>Re-sample</button>
+            <div className='col-md-4 mt-3 mb-3 btn-group'>
+                <button className='button-border red btn-lg p-3 btn btn-dark' onClick={this.props.handler}><h4>Re-sample</h4></button>
             </div>
         );
     }
@@ -31,7 +31,7 @@ export class Hand extends React.Component {
         hand.push(<div className='col-md-1'></div>);
         return (
             <div className='row mt-1 mb-1'>
-                <div className='col-md-12 mt-2'><h3>Hand {this.props.hand.number}</h3></div>
+                <div className='col-md-12 mt-2 site-text'><h2>HAND {this.props.hand.number}</h2></div>
                 {hand}
             </div>
         );
@@ -87,7 +87,7 @@ export class SampleSection extends React.Component {
             return (<Hand hand={{ number: i++,hand: hand }} />);
         });
         return (
-            <div className='row align-items-center'>
+            <div className='col-md-12 align-items-center sample-viewer p-3'>
                 {hands}
             </div>
         );

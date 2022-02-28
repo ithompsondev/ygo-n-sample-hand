@@ -163,7 +163,7 @@ export class PageContentRow extends React.Component {
 export class PageContentContainer extends React.Component {
     render() {
         return (
-            <div className='container-fluid'>
+            <div className='container-fluid ps-5 pe-5 pt-0'>
                 <PageContentRow />
             </div>
         );
@@ -173,8 +173,8 @@ export class PageContentContainer extends React.Component {
 export class PageHeader extends React.Component {
     render() {
         return (
-            <div className='logo-font p-4'>
-                <h1 className='text-warning logo-size stroke-dark'><b>YGO5 DRAW</b></h1>
+            <div className='logo-font p-3 m-0'>
+                <h1 className='red logo-size black-stroke-logo'><b>YGO5 DRAW</b></h1>
             </div>
         );
     }
