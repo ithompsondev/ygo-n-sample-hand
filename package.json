@@ -7,7 +7,7 @@
   "scripts": {
     "build-sample-front": "cd sample-front && npm run build",
     "install-sample-front": "cd sample-front && npm install",
-    "heroku-postbuild": "npm run install-sample-front && npm run build-sample-front",
+    "heroku-postbuild": "NODE_ENV=false npm run install-sample-front && npm run build-sample-front",
     "server": "node app.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix sample-front\"",
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix sample-front\""
