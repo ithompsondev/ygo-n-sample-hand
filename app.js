@@ -36,11 +36,14 @@ app.get('/',(req,res) => {
     res.json({ status: 200,deckName: deckName,deckList: deckList });
 });
 
-const __dirname = path.resolve();
-app.use(express.static(path.resolve(__dirname,'./sample-front/build')));
-app.get('*',(req,res) => {
-    res.sendFile(path.resolve(__dirname,'./sample-front/build','index.html'));
+if (process.env.NODE_ENV === 'production') {
+    console.log('attempting to server static files');
+    const __dirname = path.resolve();
+    app.use(express.static('sample-front/build'));
+    app.get('*',(req,res) => {
+    res.sendFile(path.resolve(__dirname,'sample-front','build','index.html'));
 });
+}
 
 app.listen(port,() => {
     console.log(`Server started on http://${host}:${port}`)
