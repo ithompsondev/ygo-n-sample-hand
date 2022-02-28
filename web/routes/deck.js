@@ -2,17 +2,15 @@ import express from 'express';
 import { normalize } from '../scripts/deckparse.js';
 import { sampleWithData } from '../scripts/sample.js';
 import { queryCards } from '../scripts/ygo/ygocard.js';
+import { cardURI } from '../db/db.js';
 import CardDB from '../db/carddb.js';
-
-// TODO: VALIDATION FOR MINIMUM 40 CARD DECK, MAXIMUM 60 CARD DECK
-// TODO: ERROR HANDLING FOR FETCH WHEN NOT CONNECTED TO INTERNET
 
 export const deckRouter = express.Router();
 // We connect to the carddb whenever this route is mounted
 // We then chain then() and catch() to load the card model to this db or log any errors
 const cardDB = new CardDB();
 cardDB
-    .connect('mongodb://localhost/cards')
+    .connect(cardURI)
     .then(
         (db) => { db.loadCardModel() }
     )
@@ -21,7 +19,6 @@ cardDB
     );
 
 deckRouter.post('/create',(req,res) => {
-    console.log('received deck list');
     const deckName = req.body.deckName;
     const deckList = req.body.deckList;
     // We save the new deck inside our session object that persists, our session only saves now since

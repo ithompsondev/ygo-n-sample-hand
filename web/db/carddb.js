@@ -12,10 +12,10 @@ export default class CardDB {
         return new Promise(async (resolve,reject) => {
             try {
                 this.db = await mongoose.createConnection(uri);
-                console.log(`Connected to DB: ${uri}`);
+                console.log(`Connected to Card DB`);
                 resolve(this); // We can method chain off of this promise to load the card model
             } catch (err) {
-                console.log(`Could not connect to DB: ${uri}`);
+                console.log(`Could not connect to Card DB`);
                 reject(err);
             }
         });

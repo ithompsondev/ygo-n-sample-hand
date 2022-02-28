@@ -10,6 +10,8 @@ import {
     accessRequestBody, 
 } from './scripts/server.js';
 import { deckRouter } from './routes/deck.js';
+import express from 'express'
+import path from 'path';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -32,6 +34,12 @@ app.get('/',(req,res) => {
         deckList = deckList.reduce((deckListStr,card) => { return deckListStr + card + '\n'; },'');
     }
     res.json({ status: 200,deckName: deckName,deckList: deckList });
+});
+
+const __dirname = path.resolve();
+app.use(express.static(path.resolve(__dirname,'./sample-front/build')));
+app.get('*',(req,res) => {
+    res.sendFile(path.resolve(__dirname,'./sample-front/build','index.html'));
 });
 
 app.listen(port,() => {
