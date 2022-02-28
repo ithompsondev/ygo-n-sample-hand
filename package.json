@@ -8,7 +8,7 @@
     "build-sample-front": "cd sample-front && npm run build",
     "install-sample-front": "cd sample-front && npm install",
     "heroku-postbuild": "npm run install-sample-front && npm run build-sample-front",
-    "server": "nodemon app.js",
+    "server": "node app.js",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix sample-front\"",
     "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run start --prefix sample-front\""
   },
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/ithompsondev/ygo-n-sample-hand#readme",
   "dependencies": {
+    "concurrently": "^7.0.0",
     "connect-mongodb-session": "^3.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
