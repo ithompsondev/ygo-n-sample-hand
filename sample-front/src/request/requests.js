@@ -1,6 +1,6 @@
 export async function postDeckList(deckName,deckList,createdDeckListHandler) {
     const response = await fetch(
-        `http://localhost:${process.env.PORT}/deck/create`,
+        `/deck/create`,
         {
             method: 'POST',
                 headers: {
@@ -21,7 +21,7 @@ export async function postDeckList(deckName,deckList,createdDeckListHandler) {
 // The handler callback passed in ensures that we update the relevant components state
 export async function preloadSessionData(preloadDataHandler) {
     const response = await fetch(
-        `http://localhost:${process.env.PORT}/preload`,
+        `/preload`,
         {
             method: 'GET',
             credentials: 'include'
@@ -35,7 +35,7 @@ export async function preloadSessionData(preloadDataHandler) {
 
 export async function downloadDeck(downloadDeckHandler) {
     const response = await fetch(
-        `http://localhost:${process.env.PORT}/deck/decklist`,
+        `/deck/decklist`,
         {
             method: 'GET',
             credentials: 'include'

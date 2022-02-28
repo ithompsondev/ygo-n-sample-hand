@@ -18,7 +18,7 @@ dotenv.config();
 const sessionDB = connectSessions();
 const app = setup();
 useEJS(app);
-useCORS(app);
+//useCORS(app);
 initSessions(app);
 accessRequestBody(app);
 
