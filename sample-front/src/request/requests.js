@@ -21,7 +21,7 @@ export async function postDeckList(deckName,deckList,createdDeckListHandler) {
 // The handler callback passed in ensures that we update the relevant components state
 export async function preloadSessionData(preloadDataHandler) {
     const response = await fetch(
-        'http://localhost:8000/',
+        'http://localhost:8000/preload',
         {
             method: 'GET',
             credentials: 'include'

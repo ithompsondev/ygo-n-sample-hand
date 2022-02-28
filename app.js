@@ -23,7 +23,7 @@ initSessions(app);
 accessRequestBody(app);
 
 mountRouter(app,'/deck',deckRouter);
-app.get('/',(req,res) => {
+app.get('/preload',(req,res) => {
     let deckName = '';
     let deckList = 'Pot of Greed 3\nGraceful Charity 3\nChange of Heart 3';
     if (req.session.deckName) {
@@ -37,9 +37,9 @@ app.get('/',(req,res) => {
 });
 
 if (process.env.NODE_ENV === 'production') {
-    console.log('attempting to server static files');
+    console.log('attempting to serve static files');
     const __dirname = path.resolve();
-    app.use(express.static('sample-front/build'));
+    app.use(express.static(path.resolve(__dirname,'sample-front','build')));
     app.get('*',(req,res) => {
         res.sendFile(path.resolve(__dirname,'sample-front','build','index.html'));
     });
