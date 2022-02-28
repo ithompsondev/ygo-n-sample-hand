@@ -7,31 +7,9 @@ import './styles/manual.css';
 import { DownloadIndicator } from './loader/components.js';
 import { downloadDeck } from './request/requests.js';
 import { ButtonOptionSection, MissingCardsAlert } from './options/components.js';
-import { DeckListViewer,ReturnOption } from './deck/components.js';
-import { ResampleButton, SampleSection } from './sample/components.js';
-
-export class DeckListFormSection extends React.Component {
-    render() {
-        return (
-            <div className='col-md-5'>
-                <DeckListForm handler={this.props.handler}/>
-            </div>
-        );
-    }
-}
-
-export class InstructionJumbotronSection extends React.Component {
-    render() {
-        const deckName = 'Enter a deckname';
-        const cardList = 'Enter card name and number';
-        return (
-            <div className='col-md-7 text-left'>
-                <TextJumbotron instruction={deckName} />
-                <TextJumbotron instruction={cardList} />
-            </div>
-        );
-    }
-}
+import { CreateDeck } from './main-content/components.js';
+import { DeckListViewerPage } from './deck/viewer.js';
+import { SampleViewerPage } from './sample/viewer.js';
 
 // Once the deck has been created we want the content of the page to change so we can display
 // other options
@@ -62,105 +40,121 @@ export class PageContentRow extends React.Component {
     }
 
     handleViewDeck() {
-        console.log('I clicked to view deck')
         this.setState({ currentView: 'decklist' });
     }
 
     handleSampleHands() {
-        console.log('I clicked to sample hands');
         this.setState({ currentView: 'samples' });
     }
 
     handleAlterDeckList() {
-        console.log('I clicked to alter deck list')
         this.setState({ currentView: 'alter' });
     }
     
+    download() {
+        if (!this.state.deckDownloaded) {
+            // If the deck has been created, but not yet downloaded we attempt to download deck info
+            // Only start a deck download if the deck is not downloaded!
+            downloadDeck(this.handleDeckDownloaded);
+        }
+    }
+
+    indicateDownloading() {
+        return (
+            <div className='row align-items-center p-5'>
+                <DownloadIndicator />
+            </div>
+        )
+    }
+
+    displayOptions() {
+        return (
+            <div className='row p-3'>
+                <ButtonOptionSection handlers=
+                    {
+                        {
+                            decklistHandler: this.handleViewDeck,
+                            sampleHandler: this.handleSampleHands,
+                            alterHandler: this.handleAlterDeckList       
+                        }
+                    }
+                />
+            </div>
+        );
+    }
+
+    displayOptionsWithErrors() {
+        return (
+            <div className='row p-3'>
+                <ButtonOptionSection handlers=
+                    {
+                        {
+                            decklistHandler: this.handleViewDeck,
+                            sampleHandler: this.handleSampleHands,
+                            alterHandler: this.handleAlterDeckList       
+                        }
+                    }
+                />
+                <MissingCardsAlert errors={this.state.errors} /> 
+            </div>
+        );
+    }
+
     // We pass the handleDeckCreated method down as props to be called as soon as a deck has been
     // created so we can update the page content's state
     render() {
-        // If the deck has not been created, we render our form
-        if (!this.state.deckCreated) {
-            return (
-                <div className='row align-items-center p-5'>
-                    <InstructionJumbotronSection />
-                    <DeckListFormSection handler={this.handleDeckCreated}/>
-                </div>
-            );
-        } else {
-            // Asynchronously download deck data while we continue to do other things here
-            if (!this.state.deckDownloaded) {
-                // If the deck has been created, but not yet downloaded we attempt to download deck info
-                // Only start a deck download if the deck is not downloaded!
-                downloadDeck(this.handleDeckDownloaded);
-            }
-            // While the deck has not downloaded, we display a loading spinner
-            while (!this.state.deckDownloaded) {
+        switch (this.state.deckCreated) {
+            case false:
                 return (
-                    <div className='row align-items-center p-5'>
-                        <DownloadIndicator />
-                    </div>
-                )
-            }
-            if (this.state.currentView === 'options') {
-                if (this.state.errors === null) {
-                    return (
-                        <div className='row p-3'>
-                            <ButtonOptionSection handlers=
-                                {
-                                    {
-                                        decklistHandler: this.handleViewDeck,
-                                        sampleHandler: this.handleSampleHands,
-                                        alterHandler: this.handleAlterDeckList       
-                                    }
-                                }
-                            />
-                        </div>
-                    );
-                } else {
-                    return (
-                        <div className='row p-3'>
-                            <ButtonOptionSection handlers=
-                                {
-                                    {
-                                        decklistHandler: this.handleViewDeck,
-                                        sampleHandler: this.handleSampleHands,
-                                        alterHandler: this.handleAlterDeckList       
-                                    }
-                                }
-                            />
-                            <MissingCardsAlert errors={this.state.errors} />
-                        </div>
-                    );
+                    <CreateDeck handler={this.handleDeckCreated} />
+                );
+            case true:
+                this.download();
+                while (!this.state.deckDownloaded) {
+                    return this.indicateDownloading();
                 }
-            } else if (this.state.currentView === 'decklist') {
-                return (
-                    <div className='row text-center border border-primary'>
-                        <DeckListViewer deck={this.state.deck} />
-                        <ReturnOption handler={this.handleDeckCreated}/>
-                    </div>
-                );
-            } else if (this.state.currentView === 'samples') {
-                return (
-                    <div className='row align-items-center'>
-                        <ReturnOption handler={this.handleDeckCreated} />
-                        <div className='col-md-4'></div>
-                        <ResampleButton handler={this.handleSampleHands}/>
-                        <SampleSection deck={this.state.deck} />
-                        <ReturnOption handler={this.handleDeckCreated} />
-                        <div className='col-md-4'></div>
-                        <ResampleButton handler={this.handleSampleHands}/>
-                    </div>
-                );
-            } else if (this.state.currentView === 'alter') {
-                this.setState({ deckCreated: false,deckDownloaded: false });
-                return (
-                    <div className='row align-items-center p-5'>
-                        <InstructionJumbotronSection />
-                        <DeckListFormSection handler={this.handleDeckCreated}/>
-                    </div>
-                );
-            }
+                switch (this.state.currentView) {
+                    case 'options':
+                        if (this.state.errors === null) {
+                            return this.displayOptions();
+                        } else {
+                            return this.displayOptionsWithErrors();
+                        }
+                    case 'decklist':
+                        return (
+                            <DeckListViewerPage 
+                                deck={
+                                    {
+                                        deckName: this.state.deckName,
+                                        deck: this.state.deck,
+                                        handler: this.handleDeckCreated
+                                    }
+                                }
+                            />
+                        );
+                    case 'samples':
+                        return (
+                            <SampleViewerPage 
+                                deck={
+                                    {
+                                        deck: this.state.deck,
+                                        createdHandler: this.handleDeckCreated,
+                                        sampleHandler: this.handleSampleHands
+                                    }
+                                }
+                            />
+                        );
+                    case 'alter':
+                        this.setState({ deckCreated: false,deckDownloaded: false });
+                        return (
+                            <CreateDeck handler={this.handleDeckCreated} />
+                        );
+                    default:
+                        break;
+                }
+
+            default:
+                break;
         }
     }
 }
@@ -179,8 +173,8 @@ export class PageContentContainer extends React.Component {
 export class PageHeader extends React.Component {
     render() {
         return (
-            <div className='container-fluid bg-warning p-2'>
-                <h1 className='text-dark'>YGO5 DRAW</h1>
+            <div className='logo-font p-4'>
+                <h1 className='text-warning logo-size stroke-dark'><b>YGO5 DRAW</b></h1>
             </div>
         );
     }
@@ -188,7 +182,6 @@ export class PageHeader extends React.Component {
 
 export class Page extends React.Component {
     render() {
-        // Initial get request to start
         return (
             <Fragment>
                 <PageHeader />

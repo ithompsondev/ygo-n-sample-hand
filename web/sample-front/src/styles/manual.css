@@ -1,7 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch&display=swap');
+
 .vrL {
     border-left: 2px inset black;
 }
 
 .lock-size {
     resize: none;
+}
+
+.main-bg {
+    background: darkslategrey;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.logo-font {
+    font-family: 'Chakra Petch', sans-serif;
+}
+
+.logo-size {
+    font-size: 85px;
+}
+
+.stroke-dark {
+    text-shadow: -3px 3px 2px black;
+}
+
+.stroke-warning {
+    text-shadow: 2px 2px 2px white;
 }

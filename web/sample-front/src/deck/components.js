@@ -5,8 +5,11 @@ import '../styles/manual.css';
 export class Card extends React.Component {
     render() {
         return (
-            <div className='col-md-1 mb-2'>
-                <img src={this.props.URL} style={{ width: '100%' }}/>
+            <div className='col-1 col-sm-1 col-md-1 mb-2 p-1'>
+                <img 
+                    title={this.props.card.description} 
+                    src={this.props.card.URL} 
+                    style={{ width: '100%' }}/>
             </div>
         );
     }
@@ -15,10 +18,10 @@ export class Card extends React.Component {
 export class Section extends React.Component {
     render() {
         let section = this.props.section.map(card => {
-            return <Card URL={card.art}/>
+            return <Card card={{ description: card.description,URL: card.art }}/>
         })
-        section.unshift(<div className='col-md-1'></div>)
-        section.push(<div className='col-md-1'></div>)
+        section.unshift(<div className='col-1 col-sm-1 col-md-1'></div>)
+        section.push(<div className='col-1 col-sm-1 col-md-1'></div>)
         return (
             <div className='row'>
                 {section}
@@ -31,8 +34,8 @@ export class DeckListViewer extends React.Component {
     render() {
         let sections = []
         let section = []
-        for (let i = 0; i < this.props.deck.length; i++) {
-            section.push(this.props.deck[i]);
+        for (let i = 0; i < this.props.deck.deck.length; i++) {
+            section.push(this.props.deck.deck[i]);
             if (section.length == 10) {
                 sections.push(<Section section={section} />);
                 section = [];
@@ -44,11 +47,11 @@ export class DeckListViewer extends React.Component {
         }
 
         return (
-            <div className='row mt-5 border border-danger'>
-                <div className='col-md-12'><h3>Main Deck</h3> </div>
+            <div className='row align-items-center mt-5'>
+                <div className='col-md-12'><h3>{this.props.deck.name}</h3> </div>
                 {sections}
                 <div className='col-md-8'></div>
-                <div className='col-md-4 justify-right'><h4>{this.props.deck.length} cards</h4></div>
+                <div className='col-md-4 justify-right'><h4>{this.props.deck.deck.length} cards</h4></div>
             </div>
         );    
     }

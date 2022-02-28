@@ -4,6 +4,16 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/manual.css';
 import { postDeckList, preloadSessionData } from '../request/requests.js';
 
+export class DeckListFormSection extends React.Component {
+    render() {
+        return (
+            <div className='col-md-5'>
+                <DeckListForm handler={this.props.handler}/>
+            </div>
+        );
+    }
+}
+
 export class DeckListForm extends React.Component {
     constructor(props) {
         super(props);

@@ -16,7 +16,7 @@ export class Card extends React.Component {
     render() {
         return (
             <div className='col-md-2'>
-                <img src={this.props.URL} style={{ 'object-fit': 'contain',width: '100%' }}/>
+                <img src={this.props.URL} style={{ 'objectFit': 'contain',width: '100%' }}/>
             </div>
         );
     }
