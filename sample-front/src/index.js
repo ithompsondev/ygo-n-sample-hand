@@ -1,7 +1,5 @@
 import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
-import { DeckListForm } from './form/form.js';
-import { TextJumbotron } from './jumbotron/components.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import './styles/manual.css';
 import { DownloadIndicator } from './loader/components.js';
@@ -69,7 +67,7 @@ export class PageContentRow extends React.Component {
 
     displayOptions() {
         return (
-            <div className='row p-3'>
+            <div className='row p-1'>
                 <ButtonOptionSection handlers=
                     {
                         {
@@ -85,7 +83,7 @@ export class PageContentRow extends React.Component {
 
     displayOptionsWithErrors() {
         return (
-            <div className='row p-3'>
+            <div className='row p-1'>
                 <ButtonOptionSection handlers=
                     {
                         {
@@ -152,7 +150,7 @@ export class PageContentRow extends React.Component {
                     default:
                         break;
                 }
-
+                break;
             default:
                 break;
         }

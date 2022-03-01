@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/manual.css';
 
@@ -14,9 +14,11 @@ export class ResampleButton extends React.Component {
 
 export class Card extends React.Component {
     render() {
+        const cardURL = this.props.data.URL;
+        const cardName = this.props.data.name;
         return (
-            <div className='col-md-2'>
-                <img src={this.props.URL} style={{ 'objectFit': 'contain',width: '100%' }}/>
+            <div className='col-sm-4 col-4 col-md-2 p-2'>
+                <img src={cardURL} alt={cardName} style={{ 'objectFit': 'contain',width: '100%' }}/>
             </div>
         );
     }
@@ -24,8 +26,8 @@ export class Card extends React.Component {
 
 export class Hand extends React.Component {
     render() {
-        let hand = this.props.hand.hand.map(card => {
-            return (<Card URL={card.art} />);
+        let hand = this.props.hand.hand.map((card,index) => {
+            return (<Card key={index} data={{ name: card.name,URL: card.art,handler: this.props.hand.handler }} />);
         })
         hand.unshift(<div className='col-md-1'></div>);
         hand.push(<div className='col-md-1'></div>);
@@ -41,7 +43,13 @@ export class Hand extends React.Component {
 export class SampleSection extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { deck: this.props.deck };
+        this.state = { deck: this.props.deck,view: 'default',card: null};
+        this.handleCardTouch = this.handleCardTouch.bind(this);
+    }
+
+    handleCardTouch(card) {
+        this.setState({ view: 'card',card: card});
+        console.log(card);
     }
 
     shuffle() {
@@ -58,6 +66,11 @@ export class SampleSection extends React.Component {
         const temp = this.state.deck[i];
         this.state.deck[i] = this.state.deck[j];
         this.state.deck[j] = temp;
+        // let copyDeck = this.state.deck.slice();
+        // const temp = copyDeck[i];
+        // copyDeck[i] = copyDeck[j];
+        // copyDeck[j] = temp;
+        // this.setState({ deck: copyDeck });
     }
 
     sample() {
@@ -68,7 +81,7 @@ export class SampleSection extends React.Component {
         for (let i = this.state.deck.length - 1; i >= 0; i--){
             const card = this.state.deck[i];
             hand.push(card);
-            if (hand.length == handSize) {
+            if (hand.length === handSize) {
                 hands.push(hand);
                 hand = [];
             }
@@ -83,8 +96,8 @@ export class SampleSection extends React.Component {
     render() {
         let hands = this.sample();
         let i = 1;
-        hands = hands.map(hand => {
-            return (<Hand hand={{ number: i++,hand: hand }} />);
+        hands = hands.map((hand,index) => {
+            return (<Hand key={index} hand={{ number: i++,hand: hand}} />);
         });
         return (
             <div className='col-md-12 align-items-center sample-viewer p-3'>

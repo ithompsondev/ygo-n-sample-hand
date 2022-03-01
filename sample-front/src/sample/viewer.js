@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { ReturnOption } from '../deck/components.js';
 import { ResampleButton,SampleSection } from './components.js';
 import 'bootstrap/dist/css/bootstrap.css';

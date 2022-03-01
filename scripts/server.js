@@ -39,7 +39,7 @@ export function initSessions(server) {
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: false },
+        cookie: { secure: false,maxAge: 7 * 24 * 60 * 60 * 1000 },
         store: new MongoSession({
             uri: sessionURI,
             collection: 'sessions'

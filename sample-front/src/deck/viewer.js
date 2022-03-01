@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { DeckListViewer,ReturnOption } from './components.js';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/manual.css';

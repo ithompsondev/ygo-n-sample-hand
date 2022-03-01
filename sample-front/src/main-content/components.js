@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { InstructionJumbotronSection } from '../jumbotron/jumbotron.js';
 import { DeckListFormSection } from '../form/form.js';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -7,7 +7,7 @@ import '../styles/manual.css';
 export class CreateDeck extends React.Component {
     render() {
         return (
-            <div className='row align-items-center p-5'>
+            <div className='row align-items-center p-0'>
                 <InstructionJumbotronSection instruction=
                     {
                         {
